@@ -1,4 +1,4 @@
-````markdown
+
 # Bayesian Earthquake Location with a Neural Travel-Time Surrogate
 
 **Code for:**  
