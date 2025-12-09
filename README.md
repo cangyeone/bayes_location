@@ -188,7 +188,7 @@ ayrdata/china.loc
 Once all required files are in place, simply run:
 
 ```bash
-python mcmc_speedup_gmm_mask_nuts_clean.py
+python bayes_location.py
 ```
 
 The script will:
