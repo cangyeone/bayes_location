@@ -35,7 +35,7 @@ This code focuses on **3-D regional earthquake location** using **P and S first-
 
 The main script is:
 
-- `mcmc_speedup_gmm_mask_nuts_clean.py`
+- `bayes_location.py`
 
 Core components:
 
