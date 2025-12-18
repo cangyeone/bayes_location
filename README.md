@@ -1,6 +1,9 @@
 <p align="center">
   <img src="logo.png" alt="SeismicXM logo"/>
 </p>
+
+
+
 # Bayesian Earthquake Location with a Neural Travel-Time Surrogate
 
 **Code for:**  
@@ -10,7 +13,6 @@ arXiv: [2512.06407](https://arxiv.org/abs/2512.06407)
 
 **Copyright:** © 2025, yuziye@cea-igp.ac.cn. All rights reserved.
 
----
 
 ## 1. Overview
 
