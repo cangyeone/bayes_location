@@ -1,4 +1,6 @@
-
+<p align="center">
+  <img src="logo.png" alt="SeismicXM logo"/>
+</p>
 # Bayesian Earthquake Location with a Neural Travel-Time Surrogate
 
 **Code for:**  
