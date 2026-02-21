@@ -11,6 +11,9 @@
 Yu Ziye et al., 2025  
 arXiv: [2512.06407](https://arxiv.org/abs/2512.06407)
 
+**Also related (under submission):**  
+**“Toward Trustworthy Earthquake Catalogs in the Era of Automated Detection: A Probabilistic Framework for Robust Earthquake Location”**
+
 **Copyright:** © 2025, yuziye@cea-igp.ac.cn. All rights reserved.
 
 
@@ -35,7 +38,36 @@ This code focuses on **3-D regional earthquake location** using **P and S first-
 
 ---
 
-## 2. Main Script and Functionality
+## 2. Repository Naming Conventions and Key Scripts
+
+This repository uses filename prefixes and suffixes to indicate task types and dataset/model variants:
+
+- **`location*`**: earthquake location programs.
+  - **`.crop`**: processing raw, unassociated picks.
+  - **`synth`**: synthetic-data experiments.
+  - **`real`**: real-data experiments.
+  - **`pnsn`**: travel-time model configured to handle four phase labels: **Pn, Sn, Pg, Sg**.
+
+- **`travel_time*`**: scripts for training/evaluating travel-time surrogate models.
+  - **`.pinn`**: PINN-based travel-time model training/testing.
+  - **`.real`**: workflows using real datasets.
+
+- **Travel-time checkpoint naming (`ckpt/time*.pt`)**:
+  - **`time.v1.0.pt`**: trained using synthetic data generated from the velocity model.
+  - **`*.pinn*.pt`**: trained with Eikonal/PINN constraints.
+  - **`*.real*.pt`**: trained using real datasets.
+  - **`*.pnsn*.pt`**: four-phase travel-time model (Pn, Sn, Pg, Sg), trained on real datasets.
+
+- **`scripts/`**: data-generation and preprocessing utilities.
+  - **`gen_data_v5*`** variants generate different datasets:
+    - `gen_data_v5.forloc.py`: data for location workflows.
+    - `gen_data_v5.fortest.py`: data for travel-time model testing.
+    - `gen_data_v5.fortrain.py`: data for model training.
+  - Velocity models are generated from **`scripts/run_nonlinloc/`**, which contains a six-step NonLinLoc pipeline (`step1.py` to `step6.export_hyp_catalog.py`).
+
+---
+
+## 3. Main Script and Functionality
 
 The main script is:
 
@@ -97,7 +129,7 @@ Core components:
 
 ---
 
-## 3. Data and File Structure
+## 4. Data and File Structure
 
 The example script expects the following files:
 
@@ -151,9 +183,9 @@ The example script expects the following files:
 
 ---
 
-## 4. Installation and Requirements
+## 5. Installation and Requirements
 
-### 4.1. Dependencies
+### 5.1. Dependencies
 
 - Python 3.9+ (recommended)
 - [PyTorch](https://pytorch.org/) (CPU or GPU)
@@ -169,7 +201,7 @@ pip install torch numpy tqdm
 
 (You may need a specific PyTorch build for CUDA / MPS depending on your hardware.)
 
-### 4.2. Clone and setup
+### 5.2. Clone and setup
 
 ```bash
 git clone <this-repo-url>.git
@@ -187,7 +219,7 @@ ayrdata/china.loc
 
 ---
 
-## 5. Quick Start
+## 6. Quick Start
 
 Once all required files are in place, simply run:
 
