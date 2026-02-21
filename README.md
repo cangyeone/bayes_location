@@ -52,6 +52,12 @@ This repository uses filename prefixes and suffixes to indicate task types and d
   - **`.pinn`**: PINN-based travel-time model training/testing.
   - **`.real`**: workflows using real datasets.
 
+- **Travel-time checkpoint naming (`ckpt/time*.pt`)**:
+  - **`time.v1.0.pt`**: trained using synthetic data generated from the velocity model.
+  - **`*.pinn*.pt`**: trained with Eikonal/PINN constraints.
+  - **`*.real*.pt`**: trained using real datasets.
+  - **`*.pnsn*.pt`**: four-phase travel-time model (Pn, Sn, Pg, Sg), trained on real datasets.
+
 - **`scripts/`**: data-generation and preprocessing utilities.
   - **`gen_data_v5*`** variants generate different datasets:
     - `gen_data_v5.forloc.py`: data for location workflows.
