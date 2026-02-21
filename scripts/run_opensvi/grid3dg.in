@@ -1,0 +1,91 @@
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c Specify number of layers (= number of interfaces -1)
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+1          c: Number of layers in model
+2          c: Number of velocity grid types (1 or 2)
+0.02       c: Pinchout distance (km) (>=0.0)
+vgrids.in  c: Output velocity grid file
+interfaces.in c: Output interface grid file
+145678     c: Seed for random number generation (int)
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c Set 3-D grid size and location.
+c Radial range is relative to Earth's surface (km): top, bottom
+c Lat: N-S (deg), Lon: E-W (deg, East-positive)
+c grid3dg automatically adds cushion boundary nodes to the defined grid.
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+  0.0   -70.0    c: Radial range (top-bottom) of grid (km)
+ 20.0    35.0    c: Latitudinal range (N-S) of grid (degrees)
+ 96.0   109.0    c: Longitudinal range (E-W) of grid (degrees)
+6371.0           c: Earth radius
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c Set up propagation grid file (propgrid.in) for fm3d
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+propgrid.in  c: Name of propagation grid file
+21 41 41     c: Number of points in rad lat, long
+5 5          c: Refine factor & no. of local cells
+0.05         c: Cushion factor for prop grid (<<1)
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c Set velocity grid values for layer 1
+c (two entries per line because velocity grid types = 2)
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+12 12        c: Number of radial grid points (type 1 & 2)
+12 12        c: Number of grid points in theta (N-S) (type 1 & 2)
+12 12        c: Number of grid points in phi (E-W) (type 1 & 2)
+0            c: Use model (0) or constant gradient (1)
+P            c: Use P or S velocity model
+velo_fm3d.txt c: Velocity model (option 0)
+3            c: Dimension of velocity model (1=1-D,3=3-D)
+5.4 4.0      c: Velocity at origin (km/s) (option 1)  [dummy if option 0]
+7.0 5.0      c: Velocity at maximum depth (km/s) (option 1) [dummy if option 0]
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c Optionally apply random structure to layer 1  (turn off)
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+0            c: Add random structure (0=no,1=yes)
+1.0          c: Std of Gaussian noise (ignored if 0)
+0            c: Add a priori model covariance (0=no,1=yes)?
+0.3          c: Diagonal elements of covariance matrix (if used)
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c Optionally apply checkerboard to layer 1 (turn off)
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+0            c: Add checkerboard (0=no,1=yes)
+1.0          c: Max perturbation (ignored if 0)
+2            c: Checkerboard size (N×N×N)
+0            c: Use spacing (0=no,1=yes)
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c Optionally apply spike to layer 1 (turn off)
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+0            c: Add spike (0=no,1=yes)
+0.0          c: Spike amplitude
+0.0 0.0 0.0  c: Spike location (r,theta,phi) or (z,lat,lon) depending on code notes
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c Defining the interface grids
+c For M layers => M+1 interfaces. Here M=1 => 2 interfaces.
+c Horizontal node distribution must be identical for all interfaces.
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+12           c: Number of grid points in theta (N-S)
+12           c: Number of grid points in phi (E-W)
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c Set up interface grid for interface 1 (top)
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+0            c: Obtain grid from external file (0=no,1=yes)
+interface1.z c: External interface grid file (option 1)
+0.0          c: Height of NW grid point (option 0)
+0.0          c: Height of NE grid point (option 0)
+0.0          c: Height of SW grid point (option 0)
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c Set up interface grid for interface 2 (bottom)
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+0
+interface2.z
+-70.0
+-70.0
+-70.0
