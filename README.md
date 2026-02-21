@@ -11,6 +11,9 @@
 Yu Ziye et al., 2025  
 arXiv: [2512.06407](https://arxiv.org/abs/2512.06407)
 
+**Also related (under submission):**  
+**“Toward Trustworthy Earthquake Catalogs in the Era of Automated Detection: A Probabilistic Framework for Robust Earthquake Location”**
+
 **Copyright:** © 2025, yuziye@cea-igp.ac.cn. All rights reserved.
 
 
