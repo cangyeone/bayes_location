@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+.venv/
+build/
+dist/
+work/
+private_data/
+/scripts/data/nlloc_sc/
+/scripts/data/nlloc_sc_crop/

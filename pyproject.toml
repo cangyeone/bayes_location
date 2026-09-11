@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bayes-location"
+version = "0.2.0"
+description = "Supervised travel times, robust Bayesian earthquake location, and catalog QC"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  {name = "Yuqi Cai", email = "caiyuqiming@foxmail.com"},
+  {name = "Xin Liu", email = "xinliu_geo@outlook.com"},
+  {name = "Ziye Yu", email = "yuziye@cea-igp.ac.cn"},
+  {name = "Fan Xie", email = "xiefan@outlook.com"},
+]
+dependencies = ["numpy>=1.24", "scipy>=1.10", "torch>=2.1", "pyproj>=3.5"]
+
+[project.optional-dependencies]
+fmm = ["scikit-fmm>=2023.4.2"]
+test = ["pytest>=7"]
+
+[project.scripts]
+bayesloc = "bayesloc.cli:main"
+
+[tool.setuptools]
+packages = ["bayesloc"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

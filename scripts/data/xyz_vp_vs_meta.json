@@ -1,0 +1,50 @@
+{
+  "projection": "AEQD",
+  "lon0": 102.5,
+  "lat0": 27.5,
+  "spacing_km": 5.0,
+  "x_range_km": [
+    -685.0,
+    685.0
+  ],
+  "y_range_km": [
+    -815.0,
+    850.0
+  ],
+  "z_range_km": [
+    0.0,
+    70.0
+  ],
+  "shape": [
+    15,
+    334,
+    275
+  ],
+  "n_points": 1377750,
+  "axes_file": "run_fm3d/data/xyz_vp_vs_axes_km.npz",
+  "npy_file": "run_fm3d/data/xyz_vp_vs.npy",
+  "csv_file": null,
+  "step1_lonlat_grid": {
+    "lon_range": [
+      96.0,
+      109.0
+    ],
+    "lat_range": [
+      20.0,
+      35.0
+    ],
+    "dep_range": [
+      0.0,
+      70.0
+    ],
+    "shape": [
+      15,
+      76,
+      66
+    ]
+  },
+  "fill_method": {
+    "vertical": "np.interp per (lon,lat) column with endpoint extrapolation",
+    "horizontal": "kNN-IDW per depth slice (k=8, power=2.0)"
+  }
+}
