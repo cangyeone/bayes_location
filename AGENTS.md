@@ -58,6 +58,9 @@ The user explicitly requires that real longitude/latitude not be disclosed.
 - All new public examples and tests must use fictitious data generated under
   `examples/`, centered at `(0,0)`. Do not substitute a real record and label it
   synthetic. Use summaries of schema/counts when inspecting restricted data.
+- User-requested public velocity-model adapters may download published tables
+  locally and document their upstream source. Keep regional coordinates and
+  converted products untracked; automated tests must use fictitious profiles.
 - Keep authorized real input, derived catalogs, coordinate metadata and input
   fingerprints in `private_data/` or `work/`, both Git-ignored. Do not use
   `git add -f` for these paths. A generated location CSV is not a public demo.

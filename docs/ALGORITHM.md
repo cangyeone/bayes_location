@@ -10,6 +10,7 @@ The sampler and initializer were ported from the corrected research workflow:
 | `bayesloc/multistart.py` | `multistart.py` in that directory | Preserve hybrid candidates and robust refinement; clarify that different ranks need not be distinct basins |
 | `bayesloc/training.py` | `travel_time_train.v1.0.py` and the public supervised training workflow | Preserve network architecture and masked MSE; add source-grouped validation and best-validation checkpoint selection |
 | `bayesloc/fmm.py` | Offline-label approach in `run_fm3d/gen_data_v5.fortrain.py` | Add a portable NPZ interface, unequal axis spacings, and a single-zero-node source condition |
+| `bayesloc/velocity.py` | Public SWChinaCVM-V2.0 profile-table contract | Project horizontal positions, interpolate velocity in x/y and depth, and retain matching grid geometry |
 | `bayesloc/workflow.py` | Corrected catalog output and `evaluation.py` ranking definitions | Add explicit CSV contracts, thresholds, and complete selection accounting |
 
 These historical source paths document provenance; they are not installation dependencies or promises that the old scripts are bundled. The maintained implementation is entirely in `bayesloc/`. Real research inputs, location products, and manuscript maps were not copied into the new workflow. Installing corrected code does not retroactively validate old numerical outputs.

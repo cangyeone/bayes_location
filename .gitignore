@@ -18,3 +18,4 @@ private_data/
 *.pth
 *.npy
 *.npz
+SWChinaCVMv2.0.txt*

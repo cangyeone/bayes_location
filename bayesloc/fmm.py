@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 import numpy as np
 
 from .io import read_json, save_pairs, sha256, validate_geometry, write_json
@@ -10,6 +12,8 @@ from .io import read_json, save_pairs, sha256, validate_geometry, write_json
 def read_grid(path):
     with np.load(path, allow_pickle=False) as data:
         arrays = {k: np.asarray(data[k], dtype=np.float64) for k in ("x_km", "y_km", "z_km", "vp", "vs")}
+        if "geometry_json" in data:
+            arrays["geometry"] = validate_geometry(json.loads(str(data["geometry_json"].item())))
     spacing = []
     for name in ("z_km", "y_km", "x_km"):
         axis = arrays[name]
@@ -46,6 +50,10 @@ def generate(args):
         raise ValueError("require >=2 sources, >=1 receiver/source and nonnegative label noise")
     grid, spacing = read_grid(args.grid)
     meta = validate_geometry(read_json(args.geometry))
+    if "geometry" in grid:
+        for key in ("projection", "lon0", "lat0", "vertical_datum"):
+            if grid["geometry"].get(key) != meta.get(key):
+                raise ValueError("velocity grid and geometry use different projections or vertical datums")
     axes = [grid[k] for k in ("z_km", "y_km", "x_km")]
     source_bounds = np.asarray(meta["source_bounds_km"])[::-1]
     receiver_bounds = np.asarray(meta["receiver_bounds_km"])[::-1]

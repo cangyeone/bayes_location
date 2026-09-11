@@ -22,6 +22,17 @@ def parser():
     prep.add_argument("--geometry", required=True)
     prep.add_argument("--output", required=True, help="output .npz file")
 
+    grid = sub.add_parser("build-grid", help="convert SWChinaCVM-style profiles to a Cartesian velocity NPZ")
+    grid.add_argument("--model", required=True, help="five-column lon/lat/dep/Vp/Vs text file")
+    grid.add_argument("--depth-reference", required=True, choices=["sea-level"], help="explicit input depth datum")
+    grid.add_argument("--geometry", help="optional projection/domain JSON with vertical_datum=mean_sea_level")
+    grid.add_argument("--xlim-km", nargs=2, type=float, default=[-100, 100], metavar=("MIN", "MAX"))
+    grid.add_argument("--ylim-km", nargs=2, type=float, default=[-100, 100], metavar=("MIN", "MAX"))
+    grid.add_argument("--zlim-km", nargs=2, type=float, default=[0, 40], metavar=("MIN", "MAX"))
+    grid.add_argument("--spacing-km", nargs=3, type=float, default=[5, 5, 5], metavar=("DX", "DY", "DZ"))
+    grid.add_argument("--max-nodes", type=int, default=2_000_000, help="limit target-grid memory requirements")
+    grid.add_argument("--output", required=True, help="new/empty directory for velocity.npz, geometry.json, provenance.json")
+
     fmm = sub.add_parser("generate-fmm", help="generate labeled pairs from a regular 3-D velocity grid")
     fmm.add_argument("--grid", required=True, help="NPZ with x_km,y_km,z_km,vp,vs; velocities (Nz,Ny,Nx)")
     fmm.add_argument("--geometry", required=True)
@@ -111,6 +122,9 @@ def main(argv=None):
                 "input_sha256": {k: sha256(getattr(args, k)) for k in ("stations", "events", "picks", "geometry")},
             })
             print(f"Saved {len(data['xr'])} supervised pairs: {args.output}")
+        elif args.command == "build-grid":
+            from .velocity import build_grid
+            build_grid(args)
         elif args.command == "generate-fmm":
             from .fmm import generate
             generate(args)

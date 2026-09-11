@@ -36,6 +36,8 @@ The new interface does not guess elevation units, silently resolve duplicates, o
 <a id="velocity"></a>
 ## 3. Converting flattened velocity arrays
 
+If your starting point is the five-column SWChinaCVM-V2.0 text model, use the [SWChinaCVM worked example](SWCHINA_CVM.md) and `build-grid`; the flattened-array adapter below is for already projected Cartesian products.
+
 If you have:
 
 - `xyz_vp_vs.npy`: `(N,5)` rows of `[x_km,y_km,z_km,vp,vs]`;

@@ -10,6 +10,8 @@ Public documentation and new tests use fictitious events and stations. Authorize
 
 A synthetic label needs verifiable provenance. Simulated events combined with real station coordinates do not make those station coordinates safe to redistribute. The maintained source tree does not bundle historical catalogs, model weights, geographic plots, or regional velocity products. Public tests generate their own fictitious fixtures, including model checkpoints.
 
+Instructions may reference a user-selected published velocity model such as [SWChinaCVM-V2.0](docs/SWCHINA_CVM.md). Download its tables locally, retain upstream attribution, and keep projected grids and model-specific geometry in ignored directories. Public velocity-model availability does not authorize publication of private station/event observations. The adapter's automated tests use fictitious profiles centered at `(0,0)`.
+
 ## Local storage
 
 Keep real station tables, catalogs, picks, model-specific coordinate metadata, posterior samples, geographic exports, maps, input fingerprints, and backups under `private_data/` or `work/`. Both are Git-ignored. Common weight/array extensions and old data directories are also ignored to help prevent accidental reintroduction. Logs, notebooks, screenshots, and documentation snippets can expose the same information and require the same treatment.
