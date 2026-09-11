@@ -12,7 +12,7 @@ from bayesloc.cli import main
 from bayesloc.fmm import travel_time_field
 from bayesloc.io import (load_pairs, project_rows, read_csv, read_json,
                          read_observations, timestamp, transformers, write_csv)
-from bayesloc.locator import MISSING, run_sampler
+from bayesloc.locator import MISSING, TravelTimeNet, run_sampler
 from bayesloc.training import masked_mse, split_sources
 from bayesloc.workflow import load_model, score_and_select, split_rhat
 
@@ -176,17 +176,27 @@ def test_end_to_end_cli(demo):
 
 
 def test_legacy_checkpoint_requires_geometry(tmp_path):
-    path = ROOT / "ckpt/time.v1.0.pt"
+    # Exercise the historical file contract without redistributing a research model.
+    path = tmp_path / "legacy.pt"
+    with torch.random.fork_rng(devices=[]):
+        torch.manual_seed(7)
+        original = TravelTimeNet(hidden_dim=8).eval()
+    torch.save({
+        "model_state": original.state_dict(),
+        "model_hidden_dim": 8,
+        "meta": {"projection_meta": {"lon0": 0.0, "lat0": 0.0}},
+    }, path)
     with pytest.raises(ValueError, match="legacy checkpoint"):
         load_model(path, torch.device("cpu"))
-    payload = torch.load(path, map_location="cpu", weights_only=True)
-    projection = payload["meta"]["projection_meta"]
     meta = read_json(ROOT / "examples/geometry.json")
-    meta.update(lon0=projection["lon0"], lat0=projection["lat0"])
-    meta["source_bounds_km"][2] = [0, 50]
     from bayesloc.io import write_json
     geometry = tmp_path / "private_geometry.json"
     write_json(geometry, meta)
-    model, meta = load_model(path, torch.device("cpu"), geometry)
-    assert model(torch.zeros(2, 3), torch.ones(2, 3)).shape == (2, 2)
-    assert meta["source_bounds_km"][2] == [0, 50]
+    model, loaded_meta = load_model(path, torch.device("cpu"), geometry)
+    receiver, source = torch.zeros(2, 3), torch.ones(2, 3)
+    torch.testing.assert_close(model(receiver, source), original(receiver, source))
+    assert loaded_meta == meta
+    meta["lon0"] = 0.25  # Deliberately mismatched fictitious projection.
+    write_json(geometry, meta)
+    with pytest.raises(ValueError, match="conflicts with the legacy checkpoint projection"):
+        load_model(path, torch.device("cpu"), geometry)

@@ -8,17 +8,17 @@ Public documentation and new tests use fictitious events and stations. Authorize
 - A small example geometry centered at `(0°,0°)` and an explicitly synthetic speed field.
 - Source code, schemas, aggregate counts, and numerical tests without real observation rows.
 
-A synthetic label needs verifiable provenance. Simulated events combined with real station coordinates do not make those station coordinates safe to redistribute. Historical controlled synthetic products and regional physical-model geometry are distinct from actual event/station observations; retain their provenance when using them.
+A synthetic label needs verifiable provenance. Simulated events combined with real station coordinates do not make those station coordinates safe to redistribute. The maintained source tree does not bundle historical catalogs, model weights, geographic plots, or regional velocity products. Public tests generate their own fictitious fixtures, including model checkpoints.
 
 ## Local storage
 
-Keep real station tables, catalogs, picks, model-specific coordinate metadata, posterior samples, geographic exports, maps, input fingerprints, and backups under `private_data/` or `work/`. Both are Git-ignored. Logs, notebooks, screenshots, and documentation snippets can expose the same information and require the same treatment.
+Keep real station tables, catalogs, picks, model-specific coordinate metadata, posterior samples, geographic exports, maps, input fingerprints, and backups under `private_data/` or `work/`. Both are Git-ignored. Common weight/array extensions and old data directories are also ignored to help prevent accidental reintroduction. Logs, notebooks, screenshots, and documentation snippets can expose the same information and require the same treatment.
 
 Protection also covers identifiers and exact times that link back to restricted records. The locator must output geographic coordinates for authorized local analysis; this policy prevents their disclosure through public examples, commits, or external publication.
 
 ## History cleanup
 
-The history-cleanup procedure removes the two identified real-data catalog paths from all rewritten refs and replaces identified real station/event examples in historical documentation and source comments with fictitious records. Private backups remain outside tracked content. A history-wide audit checks for the removed paths, known record signatures, and known coordinate pairs without printing coordinates.
+Before the repository was recreated, history cleanup removed the two identified real-data catalog paths and replaced identified real station/event examples with fictitious records. Private backups remain outside tracked content. A history-wide audit checked removed paths, known record signatures, and known coordinate pairs without printing coordinates. The subsequent source-tree cleanup archived the remaining historical scripts and artifacts locally; removing a file from the current tree does not erase its earlier Git objects.
 
 Force-pushing rewritten branches and tags does not remove copies held in other clones or forks, GitHub's read-only pull-request refs, or cached old commit views. GitHub Support handles removal of affected PR refs and server-side cached objects. See [GitHub's sensitive-data removal instructions](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository). The private cleanup report records actual completed steps and any remaining platform-level work; it is not a public data artifact.
 

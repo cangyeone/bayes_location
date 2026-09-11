@@ -12,7 +12,9 @@
 | Historical quality plots | `filter` | Export central 90% full widths and use a common ranking definition |
 | Manual `proj(...,inverse=True)` | `reproject` | Explicit AEQD origin, metres/kilometres conversion, and any prior coordinate offsets |
 
-Historical files remain as references; their hardcoded paths, devices, and datasets are not guaranteed to work on a new installation. The old README's `python bayes_location.py` did not correspond to a valid current entry point and has been replaced with `python -m bayesloc ...`.
+The filenames above identify historical workflows, not files included in the current source tree. Versioned experiment scripts, comparison/plotting utilities, datasets, and pretrained weights have been removed from the maintained tree. The repository owner retained a private archive during cleanup. New installations need only `bayesloc/`, the fictitious examples, and the declared dependencies.
+
+If you have an old checkout, adapt its authorized inputs locally rather than copying its scripts or data back into this repository. The old README's `python bayes_location.py` did not correspond to a valid current entry point and has been replaced with `python -m bayesloc ...`.
 
 ## 2. Different legacy text formats require different adapters
 
@@ -72,27 +74,32 @@ Use the original velocity model's projection metadata for `geometry.json`; do no
 <a id="checkpoint"></a>
 ## 4. Legacy checkpoint compatibility
 
-The new locator can load structurally compatible two-output checkpoints containing `model_state` and `model_hidden_dim`. Legacy files lack complete source/receiver domains. Verify and supply those locally rather than substituting the fictitious `(0,0)` example projection.
+No pretrained weights are bundled. The locator can still load structurally compatible two-output checkpoints containing `model_state` and `model_hidden_dim`. Store an existing authorized model at, for example, `private_data/legacy/time.pt`. Legacy files lack complete source/receiver domains. Verify and supply those locally rather than substituting the fictitious `(0,0)` example projection.
 
-For `ckpt/time.v1.0.pt`, the following extracts its existing projection into an ignored local file without printing coordinates:
+For readers of older versions, these names describe historical model families:
 
-```python
-import torch
-from bayesloc.io import write_json
+| Historical filename | Workflow |
+|---|---|
+| `time.v1.0.pt` | Two-output surrogate trained on synthetic labels |
+| `time.real.v1.0.pt` | Two-output observed-data model |
+| `time.real.pnsn.v1.0.pt` | Four-branch observed-data model |
+| `time.real.pnsn.switch.v1.0.pt` | Alternative four-branch model |
+| `time.v1.0.eikonal.pt` | Eikonal-related experimental variant |
 
-checkpoint = torch.load("ckpt/time.v1.0.pt", map_location="cpu", weights_only=True)
-projection = checkpoint["meta"]["projection_meta"]
-geometry = {
-    "projection": "AEQD",
-    "lon0": float(projection["lon0"]),
-    "lat0": float(projection["lat0"]),
-    "source_bounds_km": [[-685, 685], [-815, 850], [0, 50]],
-    "receiver_bounds_km": [[-685, 685], [-815, 850], [0, 0]],
-}
-write_json("work/legacy_geometry.json", geometry)
+A filename is not a compatibility guarantee. Before reusing a two-output model:
+
+1. Confirm `[receiver_xyz,source_xyz]` inputs, kilometre units, the `/1000` network scaling, and `[Tp,Ts]` outputs in seconds.
+2. Obtain the original projection, source bounds, receiver bounds, and vertical datum from authorized training metadata. A projection center alone cannot establish a model's domain.
+3. Save the full geometry contract described in the [README](../README.md#coordinates) as `private_data/legacy/geometry.json`. If the checkpoint contains `meta.projection_meta`, its `lon0` and `lat0` must agree with this file. Do not print or publish these regional values.
+4. Validate on independent arrivals from the intended domain before using the model for location.
+
+Pass the local paths to `evaluate` or `locate`:
+
+```text
+--checkpoint private_data/legacy/time.pt --geometry private_data/legacy/geometry.json
 ```
 
-These bounds apply only to this synthetic model's verified training provenance. Do not copy them to unrelated weights. A deeper physical velocity grid does not mean the network was trained at every grid depth. Its original receivers were at zero depth; nonzero station elevations require validation or retraining, not bypassing the bounds check.
+A deeper physical velocity grid does not mean the network was trained at every grid depth. A model trained with zero-depth receivers needs validation or retraining before using station elevations. If training provenance or domain bounds are unavailable, train a new model rather than inventing geometry.
 
 The new FMM source boundary differs from the old generator, and the trainer adds grouped validation and a different checkpoint-selection rule. Retraining is not a byte-for-byte reproduction of historical weights; retain data versions, solver settings, and validation reports.
 

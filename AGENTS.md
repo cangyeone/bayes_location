@@ -2,7 +2,10 @@
 
 Read `README.md`, `docs/ALGORITHM.md`, `docs/MIGRATION.md` and `DATA_POLICY.md`
 before changing a workflow. The supported portable entry point is
-`python -m bayesloc`; legacy root scripts are historical references.
+`python -m bayesloc`. Keep implementation in `bayesloc/`, fictitious input
+generators in `examples/`, tests in `tests/`, and supporting guides in `docs/`.
+Historical experiment scripts and pretrained weights are no longer bundled.
+Do not add parallel versioned entry-point scripts at the repository root.
 
 ## Scope and scientific contracts
 

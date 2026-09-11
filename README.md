@@ -4,9 +4,36 @@ A supervised neural travel-time surrogate with robust Bayesian earthquake locati
 
 This project embeds a differentiable P/S travel-time network in a Bayesian locator. It returns hypocenter and origin-time estimates, posterior samples, and uncertainty summaries that can be used to rank and screen candidate events.
 
-The supported entry point is `python -m bayesloc`. It covers **training from observed data**, **generating training labels with FMM and a 3-D velocity structure**, **location**, **catalog filtering**, and **inverse projection to longitude/latitude**. The updated sampler and initializer come from the corrected research workflow. See [algorithm details](docs/ALGORITHM.md), [migration instructions](docs/MIGRATION.md), and [validation performed](docs/VALIDATION.md). Historical scripts remain as references; use the unified interface for new work.
+The supported entry point is `python -m bayesloc`. It covers **training from observed data**, **generating training labels with FMM and a 3-D velocity structure**, **location**, **catalog filtering**, and **inverse projection to longitude/latitude**. The updated sampler and initializer come from the corrected research workflow. See [algorithm details](docs/ALGORITHM.md), [migration instructions](docs/MIGRATION.md), and [validation performed](docs/VALIDATION.md).
 
-> The main travel-time model uses **supervised regression**. Labels may come from a reference earthquake catalog or an offline numerical solver. Training does not read a velocity field or impose an eikonal loss. The historical class name `PINNTravelTime` does not, by itself, mean the model is physics-informed.
+> The travel-time model uses **supervised regression**. Labels may come from a reference earthquake catalog or an offline numerical solver. Training does not read a velocity field or impose an eikonal loss.
+
+## Repository layout
+
+```text
+bayesloc/          Supported Python package and command-line interface
+examples/          Fictitious input generator and example geometry
+tests/             Numerical and interface tests; fixtures generated locally
+docs/              Algorithms, migration, and validation notes
+README.md          Complete workflow, commands, and input/output schemas
+pyproject.toml     Installation, dependencies, and package metadata
+AGENTS.md          Instructions for Coding agents
+DATA_POLICY.md     Rules for handling coordinates and research data
+```
+
+The current source tree contains no bundled research datasets, pretrained weights, or versioned experiment scripts. Generate the demo below or train a model for your own domain. Keep authorized inputs in `private_data/` and generated pairs, checkpoints, and location products in `work/`; both directories are Git-ignored. For an existing model or old text format, use the [migration guide](docs/MIGRATION.md).
+
+| Task | Command |
+|---|---|
+| Observations with known sources → training pairs | `python -m bayesloc prepare` |
+| 3-D velocity grid → FMM training pairs | `python -m bayesloc generate-fmm` |
+| Training pairs → P/S travel-time model | `python -m bayesloc train` |
+| Independent travel-time validation | `python -m bayesloc evaluate` |
+| Grouped picks → location catalog and posterior samples | `python -m bayesloc locate` |
+| Catalog → ranked, filtered events | `python -m bayesloc filter` |
+| Projected catalog → longitude/latitude | `python -m bayesloc reproject` |
+
+Append `--help` to any command for its arguments. Complete commands follow below.
 
 ## Contents
 
@@ -217,7 +244,7 @@ FMM solves the eikonal equation `|∇T(x)| = 1/v(x)` for first-arrival travel ti
 
 Each axis needs at least three nodes. Axis spacings may differ; the solver receives `(dz,dy,dx)`. Speeds must be finite and positive with `vp > vs`. Do not use longitude/latitude degrees as Cartesian distances or pass `(Nx,Ny,Nz)` data as `(Nz,Ny,Nx)`.
 
-Project and interpolate geographic or irregular velocity data onto this grid first, then check missing values, boundaries, units, and resolution. Historical conversion examples remain in [step1.py](scripts/run_nonlinloc/step1.py) and [interp_velo.py](scripts/run_nonlinloc/interp_velo.py); their input formats and hardcoded paths require adaptation. See the [migration example](docs/MIGRATION.md#velocity) for converting existing `xyz_vp_vs.npy + axes_km.npz` products. A metadata JSON alone is not a complete velocity field.
+Project and interpolate geographic or irregular velocity data onto this grid first, then check missing values, boundaries, units, and resolution. See the [migration example](docs/MIGRATION.md#velocity) for converting existing `xyz_vp_vs.npy + axes_km.npz` products. A metadata JSON alone is not a complete velocity field.
 
 ### 4.3 Generate and train
 
@@ -243,7 +270,7 @@ For your region, replace the grid and geometry and design sufficient sampling co
 
 Labels are noise-free by default. `--noise-s` adds Gaussian perturbations with the same standard deviation to P and S. Coincident source–receiver pairs and pairs with negative perturbed travel times are skipped, so output size can be smaller than the requested product. No gross errors are added to the training set. Construct and document a separate contaminated test set for robustness experiments.
 
-Generation solves approximately two full grids per source, sequentially. Memory and runtime depend on grid size; the final training pairs also occupy memory. There is no multiprocessing option in this new interface. Large production datasets may need chunking and caching. The historical `scripts/gen_data_v5.*.py` implementations retain source-group reuse, multiprocessing, and distance-weighted receiver selection as adaptation references.
+Generation solves approximately two full grids per source, sequentially. Memory and runtime depend on grid size; the final training pairs also occupy memory. There is no multiprocessing option in this interface. Large production datasets may need chunking and caching; such extensions belong in `bayesloc/fmm.py` and must preserve the documented grid and label contracts.
 
 The new generator sets a single source node to zero, enforcing `T(source)=0`. Historical generators define the zero interface around one negative voxel; their near-source discretization differs, so regenerated labels are not expected to match byte-for-byte. Check homogeneous analytic solutions, grid refinement, and an independent numerical reference. A small neural fitting error does not imply a small physical modeling error.
 
@@ -266,7 +293,7 @@ Each row needs at least one phase. The training subset must contain labels for b
 
 ### 5.2 Network and optimization
 
-The architecture matches the two-output `ckpt/time.v1.0.pt` network: `[receiver_xyz,source_xyz]` inputs, seven Tanh hidden layers with 256 units by default, and `[Tp,Ts] = Softplus(output) × 10`. Internally, the network divides the **already-kilometre** coordinates by 1000 for numerical scaling. This is not a metres-to-kilometres conversion. Training and inference must retain the same order and scaling.
+`TravelTimeNet` takes `[receiver_xyz,source_xyz]` inputs, has seven Tanh hidden layers with 256 units by default, and returns `[Tp,Ts] = Softplus(output) × 10`. Internally, the network divides the **already-kilometre** coordinates by 1000 for numerical scaling. This is not a metres-to-kilometres conversion. Training and inference must retain the same order and scaling.
 
 The objective is masked MSE over all valid phase targets, in seconds squared. AdamW defaults to `lr=1e-4` and `weight_decay=0.01`. Layer width and batch size are starting settings, not universal choices. After changing hidden width, use the newly generated checkpoint rather than incompatible historical weights.
 
@@ -305,17 +332,14 @@ python -m bayesloc evaluate \
 
 ### 5.4 Checkpoint naming and applicability
 
-| Existing filename | Historical workflow |
+| Suggested local checkpoint | Training labels |
 |---|---|
-| `ckpt/time.v1.0.pt` | Supervised two-output travel-time surrogate trained on synthetic labels |
-| `ckpt/time.real.v1.0.pt` | Observed-data two-output training variant |
-| `ckpt/time.real.pnsn.v1.0.pt` | Four-branch observed-data variant |
-| `ckpt/time.real.pnsn.switch.v1.0.pt` | Alternative four-branch training variant |
-| `ckpt/time.v1.0.eikonal.pt` | Historical eikonal-related variant; inspect its training and forward definitions before reuse |
+| `work/models/time.observed.pt` | Arrivals paired with known hypocenters and origin times |
+| `work/models/time.fmm.pt` | FMM solutions from an authorized 3-D velocity grid |
 
 A filename identifies provenance, not demonstrated interchangeability. Match the region, velocity/data source, projection, phase definitions, network structure, and elevation treatment before reuse. These are not universal models for arbitrary regions.
 
-Legacy checkpoints lack the full new geometry contract. For the compatible synthetic `time.v1.0.pt`, generate and verify the local configuration described in the [migration guide](docs/MIGRATION.md#checkpoint), then pass it explicitly. Its conservative source-depth limit is 0–50 km, with zero-depth receivers, matching the verified original sampling. This does not establish uniform accuracy throughout the bounding box. Keep model-specific coordinate metadata local rather than publishing it as an example.
+No pretrained checkpoint is bundled. If you already have a compatible legacy checkpoint, keep it under `private_data/` and follow the [migration guide](docs/MIGRATION.md#checkpoint) to supply verified geometry explicitly. A matching state-dict shape does not establish applicable training coverage or accuracy. Keep model-specific coordinate metadata local rather than publishing it as an example.
 
 <a id="location"></a>
 ## 6. Earthquake location: inputs, commands, and outputs
@@ -357,13 +381,7 @@ python -m bayesloc locate \
   --output work/location/run01
 ```
 
-For the compatible legacy synthetic checkpoint, substitute:
-
-```text
---checkpoint ckpt/time.v1.0.pt --geometry work/legacy_geometry.json
-```
-
-Generate that configuration using the migration instructions. Inputs must match this model's region, depth range, and receiver layer.
+For an existing legacy model, see the [checkpoint migration instructions](docs/MIGRATION.md#checkpoint). Inputs must match the model's region, depth range, and receiver layer.
 
 | Option | Meaning |
 |---|---|

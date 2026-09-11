@@ -8,5 +8,13 @@ build/
 dist/
 work/
 private_data/
-/scripts/data/nlloc_sc/
-/scripts/data/nlloc_sc_crop/
+
+# Keep datasets, model weights, and generated products out of source control.
+/data/
+/ckpt/
+/outputs/
+/scripts/data/
+*.pt
+*.pth
+*.npy
+*.npz

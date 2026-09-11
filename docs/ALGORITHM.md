@@ -12,7 +12,7 @@ The sampler and initializer were ported from the corrected research workflow:
 | `bayesloc/fmm.py` | Offline-label approach in `run_fm3d/gen_data_v5.fortrain.py` | Add a portable NPZ interface, unequal axis spacings, and a single-zero-node source condition |
 | `bayesloc/workflow.py` | Corrected catalog output and `evaluation.py` ranking definitions | Add explicit CSV contracts, thresholds, and complete selection accounting |
 
-These source paths document provenance; installation does not depend on sibling research directories. Real research inputs, location products, and manuscript maps were not copied into the new workflow. Installing corrected code does not retroactively validate old numerical outputs.
+These historical source paths document provenance; they are not installation dependencies or promises that the old scripts are bundled. The maintained implementation is entirely in `bayesloc/`. Real research inputs, location products, and manuscript maps were not copied into the new workflow. Installing corrected code does not retroactively validate old numerical outputs.
 
 ## 2. Supervised travel-time surrogate
 
