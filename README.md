@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/logo.png" alt="SeismicX-System logo" width="640">
+</p>
+
 # Bayes Location: Travel-Time Training, Bayesian Earthquake Location, and Catalog QC
 
 A supervised neural travel-time surrogate with robust Bayesian earthquake location and event-level quality control.
