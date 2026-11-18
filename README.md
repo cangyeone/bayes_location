@@ -4,6 +4,8 @@
 
 # Bayes Location: Travel-Time Training, Bayesian Earthquake Location, and Catalog QC
 
+**English** | [中文说明](README_zh.md)
+
 A supervised neural travel-time surrogate with robust Bayesian earthquake location and event-level quality control.
 
 This project embeds a differentiable P/S travel-time network in a Bayesian locator. It returns hypocenter and origin-time estimates, posterior samples, and uncertainty summaries that can be used to rank and screen candidate events.
@@ -14,6 +16,20 @@ The supported entry point is `python -m bayesloc`. It covers **training from obs
 
 > The travel-time model uses **supervised regression**. Labels may come from a reference earthquake catalog or an offline numerical solver. Training does not read a velocity field or impose an eikonal loss.
 
+<a id="reproducibility"></a>
+## Paper reproducibility materials
+
+The paper's reproducibility materials are hosted at **[cangyeone/robust_bayes_location on Hugging Face](https://huggingface.co/cangyeone/robust_bayes_location)**. The archive provides the manuscript-specific experiment scripts, released synthetic observations and truth, 3-D velocity structure, trained supervised and EikoNet models, pinned comparator implementations, configurations, diagnostics, and aggregate results.
+
+| Resource | Use |
+|---|---|
+| This GitHub repository | Maintained Python package, command-line workflows, and fictitious examples for applying the method |
+| [Hugging Face reproducibility archive](https://huggingface.co/cangyeone/robust_bayes_location) | The paper's recorded experiments, model checkpoints, released inputs, and supporting results |
+| [REPRODUCE.md](https://huggingface.co/cangyeone/robust_bayes_location/blob/main/REPRODUCE.md) | Reproduction instructions and environment/configuration requirements |
+| [ARTIFACT_INDEX.md](https://huggingface.co/cangyeone/robust_bayes_location/blob/main/ARTIFACT_INDEX.md) | Index of the archived materials |
+
+For paper reproduction, follow the archive's version-specific instructions and recorded checkpoints. Restricted real-event and station inputs are not redistributed; their reproduction requires authorized data access, as explained in the archive's [real-data policy](https://huggingface.co/cangyeone/robust_bayes_location/blob/main/data/REAL_DATA_POLICY.md).
+
 ## Repository layout
 
 ```text
@@ -22,6 +38,8 @@ examples/          Fictitious input generator and example geometry
 tests/             Numerical and interface tests; fixtures generated locally
 docs/              Algorithms, migration, and validation notes
 README.md          Complete workflow, commands, and input/output schemas
+README_zh.md       Chinese guide, paper citation, and reproduction links
+CITATION.cff       Machine-readable software and preferred paper citation
 pyproject.toml     Installation, dependencies, and package metadata
 AGENTS.md          Instructions for Coding agents
 DATA_POLICY.md     Rules for handling coordinates and research data
@@ -43,6 +61,9 @@ The current source tree contains no bundled research datasets, pretrained weight
 Append `--help` to any command for its arguments. Complete commands follow below.
 
 ## Contents
+
+- [Paper reproducibility materials](#reproducibility)
+- [Paper details and citation](#paper-and-citation)
 
 1. [Installation and a runnable example](#quickstart)
 2. [Coordinates, units, and data contracts](#coordinates)
