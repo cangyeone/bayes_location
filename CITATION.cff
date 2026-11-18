@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: >-
+  If you use the robust Bayesian location or catalog-quality-control method,
+  please cite the article in preferred-citation.
+type: software
+title: "Bayes Location: Travel-Time Training, Bayesian Earthquake Location, and Catalog QC"
+authors:
+  - family-names: Cai
+    given-names: Yuqi
+  - family-names: Liu
+    given-names: Xin
+  - family-names: Yu
+    given-names: Ziye
+  - family-names: Xie
+    given-names: Fan
+repository-code: "https://github.com/cangyeone/bayes_location"
+url: "https://github.com/cangyeone/bayes_location"
+preferred-citation:
+  type: article
+  title: "Robust Bayesian Location and Event-Level Quality Control for Automated Earthquake Catalogs"
+  authors:
+    - family-names: Yu
+      given-names: Ziye
+    - family-names: Liu
+      given-names: Xin
+    - family-names: Cai
+      given-names: Yuqi
+    - family-names: Liu
+      given-names: Zemin
+    - family-names: Wu
+      given-names: Pingping
+    - family-names: Tan
+      given-names: Jiayan
+    - family-names: Sun
+      given-names: Jinqing
+  journal: "Bulletin of the Seismological Society of America"
+  year: 2026
+  doi: "10.1785/0120260196"
+  url: "https://doi.org/10.1785/0120260196"

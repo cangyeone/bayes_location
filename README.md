@@ -8,6 +8,8 @@ A supervised neural travel-time surrogate with robust Bayesian earthquake locati
 
 This project embeds a differentiable P/S travel-time network in a Bayesian locator. It returns hypocenter and origin-time estimates, posterior samples, and uncertainty summaries that can be used to rank and screen candidate events.
 
+**Related paper:** [Robust Bayesian Location and Event-Level Quality Control for Automated Earthquake Catalogs](https://doi.org/10.1785/0120260196), Yu et al. (2026), *Bulletin of the Seismological Society of America*. See [paper details and BibTeX](#paper-and-citation).
+
 The supported entry point is `python -m bayesloc`. It covers **training from observed data**, **generating training labels with FMM and a 3-D velocity structure**, **location**, **catalog filtering**, and **inverse projection to longitude/latitude**. The updated sampler and initializer come from the corrected research workflow. See [algorithm details](docs/ALGORITHM.md), [migration instructions](docs/MIGRATION.md), and [validation performed](docs/VALIDATION.md).
 
 > The travel-time model uses **supervised regression**. Labels may come from a reference earthquake catalog or an offline numerical solver. Training does not read a velocity field or impose an eikonal loss.
@@ -665,8 +667,27 @@ validation must be repeated.
 - **Ziye Yu** — [yuziye@cea-igp.ac.cn](mailto:yuziye@cea-igp.ac.cn)
 - **Fan Xie** — [xiefan@outlook.com](mailto:xiefan@outlook.com)
 
-## 12. Related work and licensing
+<a id="paper-and-citation"></a>
+## 12. Paper, citation, and licensing
 
-Original method: [arXiv:2512.06407](https://arxiv.org/abs/2512.06407). This repository documents runnable algorithms and data interfaces. Consult the corresponding paper and formal reproduction materials for version-specific claims, comparisons, data permissions, and citation metadata. Demonstration runs are not evidence for paper-level conclusions.
+The paper describes robust Bayesian earthquake location using Student-t residuals and latent inlier-outlier indicators, a supervised neural travel-time surrogate, and posterior-width-based event screening. If you use this method in your research, please cite:
+
+> Yu, Z., Liu, X., Cai, Y., Liu, Z., Wu, P., Tan, J., and Sun, J. (2026). **Robust Bayesian Location and Event-Level Quality Control for Automated Earthquake Catalogs.** *Bulletin of the Seismological Society of America*. [doi:10.1785/0120260196](https://doi.org/10.1785/0120260196).
+
+```bibtex
+@article{yu2026robust,
+  author  = {Yu, Ziye and Liu, Xin and Cai, Yuqi and Liu, Zemin and
+             Wu, Pingping and Tan, Jiayan and Sun, Jinqing},
+  title   = {{Robust Bayesian Location and Event-Level Quality Control for Automated Earthquake Catalogs}},
+  journal = {Bulletin of the Seismological Society of America},
+  year    = {2026},
+  doi     = {10.1785/0120260196},
+  url     = {https://doi.org/10.1785/0120260196}
+}
+```
+
+Citation metadata follow the author proof; provisional volume, issue, and page fields are omitted. [CITATION.cff](CITATION.cff) supplies the preferred article citation for GitHub and citation tools.
+
+Earlier preprint: [arXiv:2512.06407](https://arxiv.org/abs/2512.06407). This repository documents runnable algorithms and data interfaces. Consult the corresponding paper and formal reproduction materials for version-specific claims, comparisons, and data permissions. Demonstration runs are not evidence for paper-level conclusions.
 
 This update preserves the repository's existing research-use licensing statement. Contact the developers about other permissions, redistribution, or commercial use. Copyright © 2025–2026, Ziye Yu. All rights reserved.
